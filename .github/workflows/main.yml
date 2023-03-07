@@ -1,0 +1,55 @@
+name: Test
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'debug'
+      tags:
+        description: 'Test scenario tags'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Respository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials ECR
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{ always() }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: ECR Login
+        id: login-to-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: ${{ secrets.REGISTRY_ACCOUNT_ID }}
+          aws-region: us-west-2
+
+      - name: Docker Pull
+        run: |
+          docker pull ${{ secrets.ECR_URI }}
+          docker image tag ${{ secrets.ECR_URI }} codeguru:latest
+      - name: test using local action yml
+        uses: ./.github/actions
+        if: ${{ always() }}
+        with:
+          source_path: .
+          aws_region: us-east-1
+      - name: list files
+        run: |
+          cat codeguru-results.sarif.json
+      - name: Upload review result
+        if: ${{ github.event_name != 'push' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: codeguru-results.sarif.json
+          

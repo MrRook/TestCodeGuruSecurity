@@ -8,6 +8,10 @@ on:
         default: 'debug'
       tags:
         description: 'Test scenario tags'
+        
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:

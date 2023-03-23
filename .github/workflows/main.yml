@@ -47,13 +47,13 @@ jobs:
         with:
           source_path: .
           aws_region: us-east-1
-      - name: list files
+      - name: print findings.
         run: |
           ls -l
-          cat codeguru-results.sarif.json
+          cat codeguru-security-results.sarif.json
       - name: Upload review result
         if: ${{ github.event_name != 'push' }}
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: codeguru-results.sarif.json
+          sarif_file: codeguru-security-results.sarif.json
           

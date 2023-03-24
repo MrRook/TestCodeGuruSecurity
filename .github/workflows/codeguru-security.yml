@@ -40,15 +40,11 @@ jobs:
         with:
           registries: '324798398040'
           aws-region: us-west-2
-
-  runcodeguru:
-    needs: login
-    runs-on: ubuntu-latest
-    container:
-      image: 324798398040.dkr.ecr.us-west-2.amazonaws.com/codegurusecurity-actions
-    steps:          
+      
       - name: Run Action Script
-        run: python /usr/app/codeguru/command.py --source_path . --aws_region us-east-1 --output_file codeguru-security-results
+        uses: docker://324798398040.dkr.ecr.us-west-2.amazonaws.com/codegurusecurity-actions
+        with:
+          args: "--source_path . --aws_region us-east-1 --output_file codeguru-security-results"
       - name: print findings.
         run: |
           ls -l

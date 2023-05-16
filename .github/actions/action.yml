@@ -21,3 +21,6 @@ runs:
    - ${{ inputs.aws_region }}
    - --output_file
    - codeguru-security-results
+   - --break_build_on_severity 
+   - Critical
+   

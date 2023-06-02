@@ -19,7 +19,7 @@ runs:
    - ${{ inputs.source_path }}
    - --aws_region
    - ${{ inputs.aws_region }}
-   - --output_file
+   - --output_file_prefix
    - codeguru-security-results
    - --break_build_on_severity 
    - Critical
